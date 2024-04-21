@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -183,4 +184,12 @@ func (t *Tools) Slugify(s string) (string, error) {
 	}
 
 	return slug, nil
+}
+
+// DownloadStaticFile lets the user download a particular file saved on the server with the particular path given to it and the
+// downloaded file can be of the given name.
+func (t *Tools) DownloadStaticFile(w http.ResponseWriter, r *http.Request, p, file, displayName string) {
+	fp := path.Join(p, file)
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", displayName))
+	http.ServeFile(w, r, fp)
 }
